@@ -1,71 +1,126 @@
-package list
+package main
 
 import "fmt"
 
-type Lista struct {
-	info int
-	prox *Lista
+type List struct {
+	value int
+	next  *List
 }
 
-func lst_cria() *Lista {
+func create() *List {
 	return nil
 }
 
-func lst_insere(lst *Lista, val int) *Lista {
-	var novo *Lista
-	novo = new(Lista)
-	novo.info = val
-	novo.prox = lst
-	return novo
+func add(list *List, val int) *List {
+	var node *List
+	node = new(List)
+	node.value = val
+	node.next = list
+	return node
 }
 
-func lst_vazia(lst *Lista) bool {
-	return (lst == nil)
+func remove(list *List, val int) *List {
+	var previous *List = nil /* ponteiro para elemento anterior */
+	var p *List = list       /* ponteiro para percorrer a lista */
+
+	/* procura elem na lista, guardando anterior  - while com for */
+	for {
+		if p == nil || p.value == val {
+			break
+		}
+		previous = p
+		p = p.next
+	}
+	/* verifica se achou elemento */
+	if p == nil {
+		return list /* não achou: ret lista original */
+	}
+	/* achou: retira */
+	if previous == nil { /* retira elemento do inicio */
+		list = p.next
+	} else { /* retira elemento do meio da lista */
+		previous.next = p.next
+	}
+	p = nil /* libera espaço ocupado pelo elemento */
+	return list
 }
 
-func lst_busca(lst *Lista, val int) *Lista {
-	var p *Lista
-	for p := lst; p != nil; p = p.prox {
-		if p.info == val {
+func empty(list *List) bool {
+	return (list == nil)
+}
+
+func search(list *List, val int) *List {
+	var p *List
+	for p = list; p != nil; p = p.next {
+		if p.value == val {
 			return p
 		}
 	}
 	return nil
 }
 
-func lst_libera(lst *Lista) {
-	var p *Lista = lst
+func free(list *List) {
+	var p *List = list
 	for {
-		//work()
 		if p == nil {
 			break
 		}
-		var t *Lista = p.prox
-		//free(p)
+		var t *List = p.next
 		p = t
 	}
 }
 
-func lst_imprime (lst *Lista) {
-	var p *Lista
-	for (p = lst; p != NULL; p = p.prox)
-		fmt.Println(p.info)
-	fmt.Println("fim")
+func print(list *List) {
+	if !empty(list) {
+		for p := list; p != nil; p = p.next {
+			fmt.Println(p.value)
+		}
+	} else {
+		fmt.Println("-")
+	}
 }
 
-int lst_igual (Lista* lst1, Lista* lst2) {
-	var p1 *Lista, p2 *Lista //para percorrer l1 e l2
-	for (p1 = lst1;)
-/* for (p1=lst1, p2=lst2;
-p1 != NULL && p2 != NULL;
-p1 = p1->prox, p2 = p2->prox)
-{
-if (p1->info != p2->info) return 0;
-}
-return p1==p2;
-} */
+func reverse_print(list *List) {
+	if !empty(list) {
+		reverse_print(list.next)
+		fmt.Println(list.value)
+	} else {
+		fmt.Println("-")
+	}
 }
 
-func list() {
+func recursive_print(list *List) {
+	if !empty(list) {
+		fmt.Println(list.value)
+		if list.next != nil {
+			recursive_print(list.next)
+		}
+	} else {
+		fmt.Println("-")
+	}
+}
 
+func equal(lst1 *List, lst2 *List) bool {
+	var p1 *List
+	var p2 *List
+	for p1, p2 = lst1, lst2; p1 != nil && p2 != nil; p1, p2 = p1.next, p2.next {
+		if p1.value != p2.value {
+			return false
+		}
+	}
+	return p1 == p2
+}
+
+func main() {
+	var list *List
+	list = create()
+	print(list)
+	fmt.Println(empty(list))
+	list = add(list, 23)
+	list = add(list, 45)
+	list = add(list, 9)
+	print(list)
+	recursive_print(list)
+	reverse_print(list)
+	//fmt.Println(empty(list))
 }
