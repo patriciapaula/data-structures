@@ -45,8 +45,24 @@ func remove(list *List, val int) *List {
 	return list
 }
 
-func empty(list *List) bool {
-	return (list == nil)
+func recursive_remove(list *List, val int) *List {
+	if !intToBool(empty(list)) {
+		if list.value == val {
+			list = list.next
+			//free(t)
+		} else {
+			list.next = recursive_remove(list.next, val)
+		}
+	}
+	return list
+}
+
+func empty(list *List) int {
+	//return (list == nil)
+	if list == nil {
+		return 1
+	}
+	return 0
 }
 
 func search(list *List, val int) *List {
@@ -59,44 +75,45 @@ func search(list *List, val int) *List {
 	return nil
 }
 
+// O GC do Go eh quem faz a liberação
 func free(list *List) {
-	var p *List = list
+	list = nil
+	/*var p *List = list
+	fmt.Println("----------")
 	for {
 		if p == nil {
 			break
 		}
+		fmt.Println("-----")
 		var t *List = p.next
+		p = nil
 		p = t
-	}
+		fmt.Println(p.value)
+		fmt.Println(p.next)
+	}*/
 }
 
 func print(list *List) {
-	if !empty(list) {
+	if !intToBool(empty(list)) {
 		for p := list; p != nil; p = p.next {
 			fmt.Println(p.value)
 		}
-	} else {
-		fmt.Println("-")
 	}
 }
 
 func reverse_print(list *List) {
-	if !empty(list) {
+	if !intToBool(empty(list)) {
 		reverse_print(list.next)
 		fmt.Println(list.value)
-	} else {
-		fmt.Println("-")
 	}
 }
 
 func recursive_print(list *List) {
-	if !empty(list) {
+	if !intToBool(empty(list)) {
 		fmt.Println(list.value)
 		if list.next != nil {
 			recursive_print(list.next)
 		}
-	} else {
-		fmt.Println("-")
 	}
 }
 
@@ -111,16 +128,39 @@ func equal(lst1 *List, lst2 *List) bool {
 	return p1 == p2
 }
 
+func intToBool(b int) bool {
+	if b == 1 {
+		return true
+	}
+	return false
+}
+
 func main() {
-	var list *List
-	list = create()
-	print(list)
-	fmt.Println(empty(list))
+	var list = create()
+	fmt.Println(intToBool(empty(list)))
+
 	list = add(list, 23)
+	list = add(list, 17)
 	list = add(list, 45)
 	list = add(list, 9)
+	list = add(list, 31)
+
 	print(list)
 	recursive_print(list)
 	reverse_print(list)
-	//fmt.Println(empty(list))
+	fmt.Println(intToBool(empty(list)))
+
+	node := search(list, 9)
+	if node != nil {
+		fmt.Println(node.value, node.next)
+	}
+
+	list = remove(list, 9)
+	print(list)
+	list = recursive_remove(list, 17)
+	print(list)
+
+	free(list)
+	fmt.Println(intToBool(empty(list)))
+	print(list)
 }
