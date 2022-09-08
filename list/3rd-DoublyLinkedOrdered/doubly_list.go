@@ -1,10 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type List struct {
-	value int
-	next  *List
+	value    int
+	previous *List
+	next     *List
 }
 
 func create() *List {
@@ -22,6 +25,7 @@ func equal(lst1 *List, lst2 *List) bool {
 	return p1 == p2
 }
 
+// ***** this method has been changed
 func add(list *List, val int) *List {
 	var node *List
 	var previous *List = nil
@@ -39,37 +43,35 @@ func add(list *List, val int) *List {
 	//insert in the beginning
 	if previous == nil {
 		node.next = list
+		node.previous = nil
 		list = node
 	} else { //in the middle
 		node.next = previous.next
+		node.previous = previous
 		previous.next = node
 	}
 	return list
 }
 
+// ***** changed
 func remove(list *List, val int) *List {
-	var previous *List = nil /* ponteiro para elemento anterior */
-	var p *List = list       /* ponteiro para percorrer a lista */
+	var p *List = search(list, val)
 
-	/* procura elem na lista, guardando anterior  - while com for */
-	for {
-		if p == nil || p.value == val {
-			break
-		}
-		previous = p
-		p = p.next
-	}
 	/* verifica se achou elemento */
 	if p == nil {
-		return list /* não achou: ret lista original */
+		return list /* não achou */
 	}
-	/* achou: retira */
-	if previous == nil { /* retira elemento do inicio */
+
+	if list == p { /* se é o primeiro elemento */
 		list = p.next
-	} else { /* retira elemento do meio da lista */
-		previous.next = p.next
+	} else { /* retira do meio da lista */
+		p.previous.next = p.next
 	}
-	p = nil /* libera espaço ocupado pelo elemento */
+	if p.next != nil {
+		p.next.previous = p.previous
+	}
+	p = nil
+	//free(p);
 	return list
 }
 
@@ -106,7 +108,7 @@ func search(list *List, val int) *List {
 func print(list *List) {
 	if !intToBool(empty(list)) {
 		for p := list; p != nil; p = p.next {
-			fmt.Println(p.value)
+			fmt.Println(p.value) //, p.previous, p.next)
 		}
 	}
 }
@@ -114,13 +116,13 @@ func print(list *List) {
 func reverse_print(list *List) {
 	if !intToBool(empty(list)) {
 		reverse_print(list.next)
-		fmt.Println(list.value)
+		fmt.Println(list.value) //, list.previous, list.next)
 	}
 }
 
 func recursive_print(list *List) {
 	if !intToBool(empty(list)) {
-		fmt.Println(list.value)
+		fmt.Println(list.value) //, list.previous, list.next)
 		if list.next != nil {
 			recursive_print(list.next)
 		}
@@ -154,7 +156,7 @@ func free(list *List) {
 func main() {
 	var list = create()
 	fmt.Println(intToBool(empty(list)))
-
+	//ordered
 	list = add(list, 9)
 	list = add(list, 17)
 	list = add(list, 21)
