@@ -107,20 +107,8 @@ func intToBool(b int) bool {
 }
 
 // O GC do Go eh quem faz a liberação
-func free(list *List) {
-	/*var p *List = list
-	fmt.Println("----------")
-	for {
-		if p == nil {
-			break
-		}
-		fmt.Println("-----")
-		var t *List = p.next
-		p = nil
-		p = t
-		fmt.Println(p.value)
-		fmt.Println(p.next)
-	}*/
+func free(list *List) *List {
+	return nil
 }
 
 func main() {
@@ -148,7 +136,7 @@ func main() {
 	list = recursive_remove(list, 17)
 	print(list)
 
-	free(list)
+	list = free(list) // O GC faz a liberacao
 	fmt.Println(intToBool(empty(list)))
 	print(list)
 }
