@@ -138,5 +138,4 @@ func main() {
 
 	list = free(list) // O GC faz a liberacao
 	fmt.Println(intToBool(empty(list)))
-	print(list)
 }

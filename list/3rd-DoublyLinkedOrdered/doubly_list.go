@@ -56,12 +56,10 @@ func add(list *List, val int) *List {
 // ***** changed
 func remove(list *List, val int) *List {
 	var p *List = search(list, val)
-
 	/* verifica se achou elemento */
 	if p == nil {
 		return list /* não achou */
 	}
-
 	if list == p { /* se é o primeiro elemento */
 		list = p.next
 	} else { /* retira do meio da lista */
@@ -71,7 +69,6 @@ func remove(list *List, val int) *List {
 		p.next.previous = p.previous
 	}
 	p = nil
-	//free(p);
 	return list
 }
 
@@ -79,7 +76,6 @@ func recursive_remove(list *List, val int) *List {
 	if !intToBool(empty(list)) {
 		if list.value == val {
 			list = list.next
-			//free(t)
 		} else {
 			list.next = recursive_remove(list.next, val)
 		}
@@ -182,5 +178,4 @@ func main() {
 
 	list = free(list) // O GC faz a liberacao
 	fmt.Println(intToBool(empty(list)))
-	print(list)
 }

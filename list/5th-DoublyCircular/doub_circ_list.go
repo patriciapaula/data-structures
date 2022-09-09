@@ -3,8 +3,9 @@ package main
 import "fmt"
 
 type List struct {
-	value int
-	next  *List
+	value    int
+	previous *List
+	next     *List
 }
 
 var head *List = nil
@@ -24,6 +25,7 @@ func add(list *List, val int) *List {
 	if tail == nil {
 		tail = node
 	}
+	node.previous = tail
 	head = node
 	tail.next = node
 	return node
@@ -32,11 +34,10 @@ func add(list *List, val int) *List {
 func remove(list *List, val int) *List {
 	var previous *List = nil /* ponteiro para elemento anterior */
 	var p *List = list       /* ponteiro para percorrer a lista */
-	var head int = list.value
 
 	/* procura elem na lista, guardando anterior  - while com for */
 	for {
-		if p.next.value == head || p.value == val {
+		if p.next == head || p.value == val {
 			break
 		}
 		previous = p
@@ -46,13 +47,18 @@ func remove(list *List, val int) *List {
 	if p == nil {
 		return list /* não achou: ret lista original */
 	}
-	/* achou: retira */
-	//if previous == nil { /* retira elemento do inicio */ // -----
-	//	list = p.next
-	//} else { /* retira elemento do meio da lista */
+
 	previous.next = p.next
-	//}
-	p = nil /* libera espaço ocupado pelo elemento */
+	if list == p { /* se é o primeiro elemento */
+		list = p.next
+	} else { /* retira do meio da lista */
+		p.previous.next = p.next
+	}
+	if p.next != nil {
+		p.next.previous = p.previous
+	}
+
+	p = nil
 	return list
 }
 
@@ -60,7 +66,6 @@ func recursive_remove(list *List, val int) *List {
 	if !intToBool(empty(list)) {
 		if list.value == val {
 			list = list.next
-			//free(t)
 		} else {
 			list.next = recursive_remove(list.next, val)
 		}
@@ -150,7 +155,7 @@ func main() {
 
 	node := search(list, 9)
 	if node != nil {
-		fmt.Println(node.value, node.next)
+		fmt.Println(node.value, node.next, node.previous)
 	}
 
 	list = remove(list, 9)
