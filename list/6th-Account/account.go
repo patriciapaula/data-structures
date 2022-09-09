@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 )
+
 // incompleta
+
 type Account struct {
 	accountType int // 1 corrente, 2 poupanca, 3 fidelidade
 	number      float32
@@ -27,42 +29,49 @@ func create() *Account {
 	return nil
 }
 
-func add(account *Account, typeAccount int, number float32, amount float64, bonus float64) *Account {
+func add(accounts *Account, typeAccount int, number float32, amount float64, bonus float64) *Account {
 	var newAccount *Account
 	newAccount = new(Account)
+	newAccount.accountType = typeAccount
 	newAccount.number = number
+	newAccount.next = accounts
 	switch typeAccount {
-    case 1:
-        
-    case 2:
-        
-    case 3:
-        
-    }
-	newAccount.amount = amount
-	newAccount.next = account
+	case 1:
+		addCheckingAccount(number, amount)
+	case 2:
+		addSavingsAccount(number, amount)
+	case 3:
+		addLoyaltyAccount(number, amount, bonus)
+	}
 	return newAccount
 }
-func addCheckingAccount {
-	
+func addCheckingAccount(number float32, amount float64) {
+	var checking *CheckingAccount
+	checking = new(CheckingAccount)
+	checking.amount = amount
+	checking.number = number
+}
+func addSavingsAccount(number float32, amount float64) {
+	var savings *SavingsAccount
+	savings = new(SavingsAccount)
+	savings.amount = amount
+	savings.number = number
+}
+func addLoyaltyAccount(number float32, amount float64, bonus float64) {
+	var loyalty *LoyaltyAccount
+	loyalty = new(LoyaltyAccount)
+	loyalty.amount = amount
+	loyalty.number = number
+	loyalty.bonus = bonus
 }
 
-func (l LoyaltyAccount) add(account *LoyaltyAccount, number float32, amount float64, bonus float64) *LoyaltyAccount {
-	var newAccount *LoyaltyAccount
-	newAccount = new(LoyaltyAccount)
-	newAccount.number = number
-	newAccount.amount = amount
-	newAccount.next = account
-	return newAccount
-}
-
-func remove(account *Account, val int) *Account {
+func remove(account *Account, number int) *Account {
 	var previous *Account = nil /* ponteiro para elemento anterior */
 	var p *Account = account    /* ponteiro para percorrer a lista */
 
 	/* procura elem na lista, guardando anterior  - while com for */
 	for {
-		if p == nil || p.value == val {
+		if p == nil || int(p.number) == number {
 			break
 		}
 		previous = p
@@ -82,11 +91,10 @@ func remove(account *Account, val int) *Account {
 	return account
 }
 
-func recursive_remove(account *Account, number int) *Account {
+func recursive_remove(account *Account, number float32) *Account {
 	if !intToBool(empty(account)) {
 		if account.number == number {
 			account = account.next
-			//free(t)
 		} else {
 			account.next = recursive_remove(account.next, number)
 		}
@@ -102,7 +110,7 @@ func empty(account *Account) int {
 	return 0
 }
 
-func search(account *Account, number int) *Account {
+func search(account *Account, number float32) *Account {
 	var p *Account
 	for p = account; p != nil; p = p.next {
 		if p.number == number {
@@ -115,7 +123,7 @@ func search(account *Account, number int) *Account {
 func print(account *Account) {
 	if !intToBool(empty(account)) {
 		for p := account; p != nil; p = p.next {
-			fmt.Println(p.number, p.amount)
+			fmt.Println(p.number, p.accountType)
 		}
 	}
 }
@@ -123,13 +131,13 @@ func print(account *Account) {
 func reverse_print(account *Account) {
 	if !intToBool(empty(account)) {
 		reverse_print(account.next)
-		fmt.Println(account.number, account.amount)
+		fmt.Println(account.number, account.accountType)
 	}
 }
 
 func recursive_print(account *Account) {
 	if !intToBool(empty(account)) {
-		fmt.Println(account.number, account.amount)
+		fmt.Println(account.number, account.accountType)
 		if account.next != nil {
 			recursive_print(account.next)
 		}
@@ -152,25 +160,27 @@ func main() {
 	var account = create()
 	fmt.Println(intToBool(empty(account)))
 
-	account = add(account, 23)
-	account = add(account, 17)
-	account = add(account, 45)
-	account = add(account, 9)
-	account = add(account, 31)
+	account = add(account, 1, 235, 230, 0)
+	account = add(account, 3, 563, 230, 50)
+	account = add(account, 2, 123, 230, 0)
+	account = add(account, 2, 654, 230, 0)
+	account = add(account, 1, 205, 150, 0)
+	account = add(account, 3, 241, 80, 10)
+	account = add(account, 1, 794, 100, 0)
 
 	print(account)
 	recursive_print(account)
 	reverse_print(account)
 	fmt.Println(intToBool(empty(account)))
 
-	account := search(account, 9)
-	if account != nil {
-		fmt.Println(account.value, account.next)
+	var ac = search(account, 654)
+	if ac != nil {
+		fmt.Println(account.number, account.accountType)
 	}
 
-	account = remove(account, 9)
+	ac = remove(account, 205)
 	print(account)
-	account = recursive_remove(account, 17)
+	ac = recursive_remove(account, 794)
 	print(account)
 
 	account = free(account) // O GC faz a liberacao
