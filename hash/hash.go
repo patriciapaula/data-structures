@@ -79,39 +79,58 @@ func hashF(key int) int {
 }
 
 func add(hash *HashItem, val string) *HashItem {
-	var list *List
+
 	var p *HashItem = hash
 	var previous *HashItem
-	var newPos = 0
+	//var newPos = 0
+	//var list *List
 
-	count++
+	countPos := count
+	index := hashF(countPos)
 
-	countPos := count - 1
+	if 
+
 	for {
-		newPos = hashF(countPos) // search new position
-		if countPos >= newPos && p == nil {
+		index = hashF(countPos) // search new position
+		if countPos >= index {
 			break
 		}
-		countPos++
 		previous = p
 		p = p.next
+		countPos++
 	}
+	if countPos-count > 1 {
+		for {
 
-	if countPos <= 1 { //first
-		list = new(List)
-		list.value = val
-		list.next = nil
-
-		p = new(HashItem)
-		p.key = newPos
-		p.value = list
-	} else {
-		list = addList(p.value, val) // erro ***
-		p.value = list
-		//if previous != nil { //there is a previous
-		previous.next = p
-		//}
+		}
 	}
+	// for {
+	// 	newPos = hashF(countPos) // search new position
+	// 	if countPos >= newPos && p == nil {
+	// 		break
+	// 	}
+	// 	countPos++
+	// 	previous = p
+	// 	p = p.next
+	// }
+
+	// if countPos <= 1 { //first
+	// 	list = new(List)
+	// 	list.value = val
+	// 	list.next = nil
+
+	// 	p = new(HashItem)
+	// 	p.key = newPos
+	// 	p.value = list
+	// } else {
+	// 	list = addList(p.value, val) // erro ***
+	// 	p.value = list
+	// 	//if previous != nil { //there is a previous
+	// 	previous.next = p
+	// 	//}
+	// }
+	count++
+
 	return p
 }
 
